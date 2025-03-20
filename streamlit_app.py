@@ -53,7 +53,7 @@ bmi = st.sidebar.number_input("🏋️ BMI", min_value=10.0, max_value=60.0)
 diabetes_pedigree = st.sidebar.number_input("👨‍⚕️ Diabetes Pedigree Function", min_value=0.0, max_value=2.5)
 
 # 💂️ Load Dataset
-df = pd.read_csv("https://raw.githubusercontent.com/SuzyJoelly/diabetes-predictions-app/main/TAIPEI_diabetes.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/NathanBrunet/ML-Project-Diabetes-Prediction/refs/heads/main/TAIPEI_diabetes%20(1).csv?token=GHSAT0AAAAAAC76KYIJGIWBAIZVJMHJWTHSZ64HBVQ")
 
 # Remove 'PatientID' column if it exists
 if 'PatientID' in df.columns:
