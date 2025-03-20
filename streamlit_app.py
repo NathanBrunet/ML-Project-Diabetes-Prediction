@@ -59,6 +59,12 @@ df = pd.read_csv("https://raw.githubusercontent.com/SuzyJoelly/diabetes-predicti
 if 'PatientID' in df.columns:
     df = df.drop(columns=['PatientID'])
 
+# Remove rows with missing values in the target column 'Diabetic'
+df.dropna(subset=['Diabetic'], inplace=True)
+
+# Check for missing values in the rest of the dataset
+df.fillna(df.mean(), inplace=True)  # Handle missing values in the features by filling with the mean
+
 # 🚀 **Model Building and Prediction**
 
 # Split data into features (X) and target (y)
@@ -107,7 +113,6 @@ ax.set_xlabel("Diabetic Status")
 ax.set_title("Diabetes Cases", fontsize=14)
 st.pyplot(fig)
 
-
 st.write("### 🎂 Age Distribution")
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.histplot(df["Age"], bins=20, kde=True, color="#FF4B4B", edgecolor="black")
@@ -128,4 +133,3 @@ with st.sidebar.expander("Prediction Result"):
         st.markdown(f"<h3 style='color: #D81B60; text-align: center;'>🚨 Prediction: The patient is likely to have diabetes.</h3>", unsafe_allow_html=True)
     else:
         st.markdown(f"<h3 style='color: #1E88E5; text-align: center;'>✅ Prediction: The patient is likely to not have diabetes.</h3>", unsafe_allow_html=True)
-
