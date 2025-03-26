@@ -39,7 +39,7 @@ st.markdown(
 
 # Title with color
 st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🎈 Diab-Track</h1>", unsafe_allow_html=True)
-st.info("Predicting Diabetes Outcomes from Health Data Patterns in the TAIPEI Dataset")
+st.info("Test message to see if anything changes")
 
 # Sidebar for User Input
 st.sidebar.header("User Input for Prediction")
