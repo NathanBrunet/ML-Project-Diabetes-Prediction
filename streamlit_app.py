@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # 🎨 Set Streamlit Page Configuration
 st.set_page_config(page_title="Diabetes Data Explorer", page_icon="📊", layout="wide")
@@ -96,36 +93,6 @@ user_input_scaled = scaler.transform(user_input)
 
 # Make prediction
 prediction = model.predict(user_input_scaled)
-
-# 📊 **Data Visualization Section**
-st.subheader("📊 Data Visualizations")
-
-# 🔹 Custom Color Palette
-colors = ["#FF4B4B", "#1E88E5", "#FFC107", "#2E7D32", "#D81B60", "#8E24AA"]
-
-# **1. Diabetes Count Plot (Improved Aesthetic)**
-st.write("###  Diabetes Cases")
-fig, ax = plt.subplots(figsize=(5, 4))
-sns.countplot(x=df["Diabetic"], palette=["#1E88E5", "#D81B60"], ax=ax)
-ax.set_xticklabels(["No Diabetes", "Diabetes"])
-ax.set_ylabel("Count")
-ax.set_xlabel("Diabetic Status")
-ax.set_title("Diabetes Cases", fontsize=14)
-st.pyplot(fig)
-
-st.write("### 🎂 Age Distribution")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.histplot(df["Age"], bins=20, kde=True, color="#FF4B4B", edgecolor="black")
-ax.set_xlabel("Age")
-ax.set_ylabel("Count")
-st.pyplot(fig)
-
-st.write("### 🍬 Plasma Glucose/Age")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.scatterplot(x=df["Age"], y=df["PlasmaGlucose"], hue=df["Diabetic"], palette=["#1E88E5", "#D81B60"], alpha=0.7)
-ax.set_xlabel("Age")
-ax.set_ylabel("Plasma Glucose Level")
-st.pyplot(fig)
 
 # Move prediction to sidebar
 with st.sidebar.expander("Prediction Result"):
