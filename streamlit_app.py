@@ -98,7 +98,7 @@ user_input_scaled = scaler.transform(user_input)
 prediction = model.predict(user_input_scaled)
 
 # **Data Visualization Section**
-st.subheader("📊 Data Visualizations")
+st.subheader("📊 Data Visualizations Section !")
 
 # 🔹 Custom Color Palette
 colors = ["#FF4B4B", "#1E88E5", "#FFC107", "#2E7D32", "#D81B60", "#8E24AA"]
