@@ -1,6 +1,6 @@
 # ML App 
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://diabetes-predictions-app-ml.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://a24-diabetes-prediction.streamlit.appp/)
 
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/NathanBrunet/ML-Project-Diabetes-Prediction/blob/main/DiabetesPrediction.ipynb)
