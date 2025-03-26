@@ -104,7 +104,7 @@ st.subheader("📊 Data Visualizations")
 colors = ["#FF4B4B", "#1E88E5", "#FFC107", "#2E7D32", "#D81B60", "#8E24AA"]
 
 # **1. Diabetes Count Plot (Improved Aesthetic)**
-st.write("###  Diabetes Cases")
+st.write("### 🩸 Diabetes Cases")
 fig, ax = plt.subplots(figsize=(5, 4))
 sns.countplot(x=df["Diabetic"], palette=["#1E88E5", "#D81B60"], ax=ax)
 ax.set_xticklabels(["No Diabetes", "Diabetes"])
