@@ -38,13 +38,13 @@ st.markdown(
 )
 
 # Title with color
-st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🎈 Diab-Track</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🎈 Diabe-Tracks</h1>", unsafe_allow_html=True)
 st.info("Test message to see if anything changes")
 
 # Sidebar for User Input
 st.sidebar.header("User Input for Prediction")
 age = st.sidebar.number_input("👵 Age", min_value=18, max_value=130)
-pregnancies = st.sidebar.number_input("🤰 Number of Pregnancies", min_value=0)
+pregnancies = st.sidebar.number_input("🧐 Number of Pregnancies", min_value=0)
 plasma_glucose = st.sidebar.number_input("🍭 Plasma Glucose", min_value=50, max_value=250)
 diastolic_bp = st.sidebar.number_input("🩸 Diastolic Blood Pressure", min_value=40, max_value=150)
 triceps_thickness = st.sidebar.number_input("💪 Triceps Skin Fold Thickness", min_value=5, max_value=100)
