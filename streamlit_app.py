@@ -37,22 +37,22 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 🌟 Title with color
+# Title with color
 st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🎈 Diab-Track</h1>", unsafe_allow_html=True)
 st.info("Predicting Diabetes Outcomes from Health Data Patterns in the TAIPEI Dataset")
 
-# 💂️ Sidebar for User Input
+# Sidebar for User Input
 st.sidebar.header("User Input for Prediction")
-age = st.sidebar.number_input("👵 Age", min_value=18, max_value=120)
+age = st.sidebar.number_input("👵 Age", min_value=18, max_value=130)
 pregnancies = st.sidebar.number_input("🤰 Number of Pregnancies", min_value=0)
 plasma_glucose = st.sidebar.number_input("🍭 Plasma Glucose", min_value=50, max_value=250)
-diastolic_bp = st.sidebar.number_input("💎 Diastolic Blood Pressure", min_value=40, max_value=200)
-triceps_thickness = st.sidebar.number_input("💪 Triceps Skin Fold Thickness", min_value=10, max_value=100)
+diastolic_bp = st.sidebar.number_input("🩸 Diastolic Blood Pressure", min_value=40, max_value=150)
+triceps_thickness = st.sidebar.number_input("💪 Triceps Skin Fold Thickness", min_value=5, max_value=100)
 serum_insulin = st.sidebar.number_input("💉 Serum Insulin", min_value=0, max_value=1000)
 bmi = st.sidebar.number_input("🏋️ BMI", min_value=10.0, max_value=60.0)
 diabetes_pedigree = st.sidebar.number_input("👨‍⚕️ Diabetes Pedigree Function", min_value=0.0, max_value=2.5)
 
-# 💂️ Load Dataset
+# Load Dataset
 df = pd.read_csv("https://raw.githubusercontent.com/SuzyJoelly/diabetes-predictions-app/refs/heads/main/TAIPEI_diabetes%20.csv")
 
 # Remove 'PatientID' column if it exists
@@ -65,7 +65,7 @@ df.dropna(subset=['Diabetic'], inplace=True)
 # Check for missing values in the rest of the dataset
 df.fillna(df.mean(), inplace=True)  # Handle missing values in the features by filling with the mean
 
-# 🚀 **Model Building and Prediction**
+# **Model Building and Prediction**
 
 # Split data into features (X) and target (y)
 X = df.drop("Diabetic", axis=1)
@@ -97,7 +97,7 @@ user_input_scaled = scaler.transform(user_input)
 # Make prediction
 prediction = model.predict(user_input_scaled)
 
-# 📊 **Data Visualization Section**
+# **Data Visualization Section**
 st.subheader("📊 Data Visualizations")
 
 # 🔹 Custom Color Palette
