@@ -82,11 +82,11 @@ Use the Streamlit badge at the beginning of the file to make automatic diabetes 
 <!-- Running the project locally -->
 ### :exclamation: Prerequisites - Running the project locally
 
-Clone the project.
+Clone the project
 ```bash
   git clone https://github.com/NathanBrunet/ML-Project-Diabetes-Prediction.git
 ```
-Install all necessary requirements.
+Install all necessary requirements
 
 ```bash
   pip install -r requirements_full.txt
