@@ -7,7 +7,6 @@
     Predict automatically the diagnosis of diabetics. 
   </p>
   
-  
 <!-- Badges -->
 <p>
   <a href="https://diabetes-predictions-app-ml.streamlit.app/">
@@ -17,8 +16,7 @@
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" />
   </a>
 </p>
-
-<br />
+  </div>
 
 <!-- About the Project -->
 ## :star2: About the Project
