@@ -19,7 +19,6 @@
 </p>
 
 <br />
-  
 
 <!-- About the Project -->
 ## :star2: About the Project
