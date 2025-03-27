@@ -4,7 +4,7 @@
   <h1>Diabetes Prediction Pipeline</h1>
   
   <p>
-    Predict automatically the diagnosis of diabetics. 
+    Predict automatically the diagnosis of diabetes. 
   </p>
   
 <!-- Badges -->
