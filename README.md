@@ -1,7 +1,7 @@
 <div align="center">
 
   <img src="https://zupimages.net/up/25/13/rkqb.png" alt="logo" width="200" height="auto" />
-  <h1>Diabetes Prediction Pipeline</h1>
+  <h1>Diabetes Prediction Pipeline & Application</h1>
   
   <p>
     Predict automatically the diagnosis of diabetes. 
@@ -9,7 +9,7 @@
   
 <!-- Badges -->
 <p>
-  <a href="https://diabetes-predictions-app-ml.streamlit.app/">
+  <a href="https://a24-diabetes-prediction.streamlit.app/">
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Open in Streamlit" />
   </a>
   <a href="https://colab.research.google.com/github/NathanBrunet/ML-Project-Diabetes-Prediction/blob/main/DiabetesPrediction.ipynb">
