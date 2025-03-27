@@ -51,7 +51,7 @@ menu = st.sidebar.selectbox("📌 Select a Page", ["🏥 Prediction", "📊 Stud
 
 # ----------------------  PREDICTION ----------------------
 if menu == "🏥 Prediction":
-    st.title("🩺 Diabetes Prediction")
+    st.title("🩺 Diabetes Prediction POUET")
     prediction_type = st.radio("Choose Prediction Type:", ["Single Prediction", "Multiple Prediction"], horizontal=True)
 
     if prediction_type == "Single Prediction":
