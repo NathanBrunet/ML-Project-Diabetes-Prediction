@@ -68,7 +68,7 @@ For the modeling, training and testing phase:
 - Test results according to the ROC-AUC score metric and classification report data (confusion matrix, F1-score, recall, accuracy, precision) are printed for each model-
 - The best model (XGBoost) according to our principal metric is then saved (with pickle module) for future use in the Streamlit application
 
-### :💻: Streamlit Application
+### 💻 Streamlit Application
 
 
 <!-- Getting Started -->
