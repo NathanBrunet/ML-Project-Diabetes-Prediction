@@ -33,6 +33,7 @@ The best model is selected and saved, then integrated within a Streamlit-hosted 
 
 The dataset was first loaded and then thoroughly cleaned. 
 The dataset has 15,000 entries, 9 initial features (PatientID, Pregnancies, PlasmaGlucose, DiastolicBloodPressure,	TricepsThickness,	SerumInsulin,	BMI, DiabetesPedigree,	Age) for each patient corresponding to real gathered medical data, and 1 Diabetic categorical variable (1 = Diabetic/ 0 = Non-Diabetic).
+
 The cleaning steps included:
 
 - Check for NaN presence (Not A Number values)
