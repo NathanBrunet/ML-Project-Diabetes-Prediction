@@ -1,18 +1,30 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import joblib
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.ensemble import RandomForestClassifier
 from IPython.display import display
+
+from sklearn.metrics import roc_auc_score, roc_curve, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.feature_selection import RFECV
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import PowerTransformer
+
+# Modèles avancés
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 st.set_page_config(page_title="Diabetes Prediction", layout="wide", page_icon="🏥")
 
 # Load trained model
 @st.cache_data
 def load_model():
-    return joblib.load("diabetes_model.pkl")
+    return joblib.load("best_model.pkl")
 
 model = load_model()
 
@@ -51,7 +63,7 @@ menu = st.sidebar.selectbox("📌 Select a Page", ["🏥 Prediction", "📊 Stud
 
 # ----------------------  PREDICTION ----------------------
 if menu == "🏥 Prediction":
-    st.title("🩺 Diabetes Prediction POUET")
+    st.title("🩺 Diabetes Prediction")
     prediction_type = st.radio("Choose Prediction Type:", ["Single Prediction", "Multiple Prediction"], horizontal=True)
 
     if prediction_type == "Single Prediction":
@@ -95,7 +107,7 @@ if menu == "🏥 Prediction":
 if menu == "📊 Study Report":
     st.title("📊 Study Report")
     
-    st.write(" Features/variables are of homogeneous types and there appears to be no problematic NaN values. The fact that there are 2 float type variables (BMI, DiabetesPedigree) as well as int type ones is not an issue for numerical analysis. According to our general statistics, no null values are to be noted in our dataset. However, there seems to be some outliers, class imbalances in our dataset to handle, and maybe the necessity to rescale and/or normalize our data.")
+    st.write(" Here we give some insights about the data : histograms for features, class repartitions, correlation matrix between features to see relationships between them and the target variable. ")
 
     df = pd.read_csv("TAIPEI_diabetes.csv").drop(columns=['PatientID'])
     
@@ -113,7 +125,7 @@ if menu == "📊 Study Report":
     plt.figure(figsize=(8, 6))
     plt.pie(diabetes_counts, labels=['Non-Diabetic', 'Diabetic'], autopct='%1.1f%%', colors=['lightblue', 'lightcoral'])
     st.pyplot(plt)
-    st.write(" As we can see, there is an imbalance in favor of the non-diabetic class. That's not extreme, but it's there. In reality, outside of our dataset, such an imbalance is not outrageous, since diabetes only affects about 11-12% of people worldwide (cf. study). However, even if the gap between classes isn't very large, our future model could be negatively influenced by class imbalance. The model could simply learn to predict the majority class (non-diabetics) with high accuracy, but perform poorly in predicting the minority class (diabetics). This could lead to a poor model, even if overall accuracy is high.    There are techniques to improve the model's ability to predict instances of the minority class (diabetics), which may be of greater interest here, since failing to detect a diabetic can be far more serious than incorrectly predicting a non-diabetic as a diabetic. Hence, we can try to use resampling techniques to see if it can be useful for the model performance metrics we'll choose.")
+    st.write(" As we can see, there is an imbalance in favor of the non-diabetic class. That's not extreme, but it's there. In reality, outside of our dataset, such an imbalance is not outrageous, since diabetes only affects about 11-12% of people worldwide (cf. study).")
     #---
 
 
@@ -136,8 +148,8 @@ if menu == "📊 Study Report":
         "🗂 **Dataset Overview:** 15,000 records with 8 features",
         "🛠 **Missing Values Handling:** No major missing data",
         "📊 **Feature Importance:** PlasmaGlucose and BMI are key indicators",
-        "⚖️ **Diabetes Distribution:** 35% of the dataset has diabetes",
-        "🧩 **Correlation Matrix:** High correlation between glucose and diabetes"
+        "⚖️ **Diabetes Distribution:** 33.3% of the dataset individuals have diabetes",
+        "🧩 **Correlation Matrix:** High correlation between Pregnancies, AAge, BMI and diabetes"
     ]
     
     for slide in eda_slides:
@@ -147,27 +159,24 @@ if menu == "📊 Study Report":
 # ---------------------- MODEL EVALUATION ----------------------
 if menu == "📈 Model Evaluation":
     st.title("📈 Model Evaluation")
-    st.write("### 🤖 Model Used: **RandomForest Classifier**")
-    st.write("🏆 **Performance:** Random Forest performed best with an accuracy of **85%**.")
+    st.write("### 🤖 Model Used: **XGBoost**")
+    st.write("🏆 **Performance:** XGBoost performed best with a ROC-AUC score of **97.26%**.")
 
     eval_metrics = {
-        "🎯 Accuracy": "85%",
-        "📍 Precision": "83%",
-        "🔄 Recall": "80%",
-        "🧠 F1 Score": "81%"
+        "🎯 Accuracy": "93%",
+        "📍 Precision": "90%",
+        "🔄 Recall": "88%",
+        "🧠 F1 Score": "89%"
     }
     
     for metric, value in eval_metrics.items():
         st.write(f"**{metric}:** {value}")
 
     st.subheader("📌 Feature Importance")
-    feature_importance = model.feature_importances_
-    features = ["Pregnancies", "PlasmaGlucose", "DiastolicBloodPressure", "TricepsThickness",
-                "SerumInsulin", "BMI", "DiabetesPedigree", "Age"]
-    plt.figure(figsize=(8, 4))
-    sns.barplot(x=feature_importance, y=features, palette="viridis")
-    st.pyplot(plt)
-
+    image_url = "https://zupimages.net/up/25/13/gsap.png" 
+    st.image(image_url, use_container_width=True)
+    st.write("🔍 **Note:** This image represents the importance of basic and crafted (during features engineering) features in predicting diabetes using the XGBoost model.")
+    #---
 # ---------------------- ABOUT PAGE ----------------------
 if menu == "ℹ️ About":
     st.title("ℹ️ About the Project")
