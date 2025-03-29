@@ -27,7 +27,7 @@ def inspect_model(model_path):
             print("Expected features:")
             print(pd.DataFrame(model.feature_names_in_, columns=["Features"]))
         else:
-            print("⚠️ Feature names not stored in model")
+            print(" Feature names not stored in model")
 
         # 3. Safe Parameters
         print("\n[3] Model Parameters (safe extract):")
@@ -55,21 +55,21 @@ def inspect_model(model_path):
                     }).sort_values('Importance', ascending=False)
                     print(importances)
                 else:
-                    print("⚠️ RFECV support_ attribute not available")
+                    print(" RFECV support_ attribute not available")
             else:
-                print("⚠️ Importance not available (not a tree-based model)")
+                print(" Importance not available (not a tree-based model)")
         except Exception as e:
-            print(f"⚠️ Could not get importance: {str(e)}")
+            print(f" Could not get importance: {str(e)}")
 
         # 5. Classes (for classifiers)
         print("\n[5] Output Classes:")
         if hasattr(classifier, 'classes_'):
             print(classifier.classes_)
         else:
-            print("⚠️ Not a classifier or classes not available")
+            print("Not a classifier or classes not available")
 
     except Exception as e:
-        print(f"❌ Critical error: {str(e)}")
+        print(f"Critical error: {str(e)}")
 
 # Usage
 inspect_model("best_model.pkl")
