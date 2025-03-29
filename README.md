@@ -80,7 +80,7 @@ The Diabetes Prediction app proposes 4 pages to explore :
 
 Allows the user to conduct a diabetes diagnosis prediction based on its inputs for the different concerned features (Age, BMI, etc.), for a single (Single Prediction button) or multiple (Multiple Prediction) individuals (by charging a CSV file), and debuging insights.
 
-#### Prediction
+#### Study Report
 
 Provides several key visual insights about the dataset used and its features (features histograms, class repartition - Diabetic VS Non-Diabetic, correlation matrix between features and target variable).
 
