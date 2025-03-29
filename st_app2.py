@@ -14,10 +14,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import PowerTransformer
-
-# Modèles avancés
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
+
+from diabetesprediction_utils import (
+    preprocess_pipeline,
+    all_numerical_columns  
+)
 
 st.set_page_config(page_title="Diabetes Prediction", layout="wide", page_icon="🏥")
 
@@ -28,6 +31,19 @@ def load_model():
 
 model = load_model()
 
+def preprocess_input(df):
+    """Apply all preprocessing steps using functions from pipeline file"""
+    # Handle PatientID if present
+    if 'PatientID' in df.columns:
+        df = remove_patient_id(df)
+    
+    # Apply processing pipeline
+    df = df.drop_duplicates()
+    df = winsorize_with_exception(df)
+    df = generate_features(df)
+    df = transform_data(df, all_numerical_columns)
+    
+    return df
 
 # Custom Theme
 custom_css = """
@@ -39,7 +55,6 @@ custom_css = """
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
-
 
 # ---------------- Sidebar UI  ----------------
 st.markdown(
@@ -68,6 +83,7 @@ if menu == "🏥 Prediction":
 
     if prediction_type == "Single Prediction":
         st.subheader("📝 Enter Patient Details")
+        
         col1, col2 = st.columns(2)
 
         with col1:
@@ -79,29 +95,56 @@ if menu == "🏥 Prediction":
         with col2:
             insulin = st.number_input("💉 Serum Insulin (mu U/ml)", 0, 900, 80)
             bmi = st.number_input("⚖️ BMI", 10.0, 50.0, 25.0)
-            pedigree = st.number_input("👨‍👩‍👧 Diabetes Pedigree", 0.0, 2.5, 0.5)
+            pedigree = st.number_input("🧬 Diabetes Pedigree", 0.0, 2.5, 0.5)
             age = st.number_input("🎂 Age", 18, 90, 30)
 
         if st.button("🚀 Predict"):
-            input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, pedigree, age]])
-            prediction = model.predict(input_data)[0]
+            # Create DataFrame directly
+            input_df = pd.DataFrame([{
+                'Pregnancies': pregnancies,
+                'PlasmaGlucose': glucose,
+                'DiastolicBloodPressure': blood_pressure,
+                'TricepsThickness': skin_thickness,
+                'SerumInsulin': insulin,
+                'BMI': bmi,
+                'DiabetesPedigree': pedigree,
+                'Age': age
+            }])
+            
+            # Process and predict
+            processed_data = preprocess_input(input_df)
+            prediction = model.predict(processed_data)[0]
+            
+            # Display results
             if prediction == 1:
-                st.warning(f"🔮 Prediction: **{'Diabetic'}**")
+                st.error("🔴 Prediction: Diabetic")
             else:
-                st.success(f"🔮 Prediction: **{'Not Diabetic'}**")
+                st.success("🟢 Prediction: Not Diabetic")
 
     elif prediction_type == "Multiple Prediction":
         st.subheader("📂 Upload CSV File")
         uploaded_file = st.file_uploader("📤 Upload CSV", type=["csv"])
         
         if uploaded_file:
-            df = pd.read_csv(uploaded_file)
-            st.dataframe(df)
+            raw_df = pd.read_csv(uploaded_file)
+            st.dataframe(raw_df)
+            
             if st.button("🔍 Predict for Uploaded Data"):
-                predictions = model.predict(df)
-                df["Diabetic"] = predictions
-                st.dataframe(df)
-                st.download_button("📥 Download Predictions", df.to_csv(index=False), "predictions.csv", "text/csv")
+                try:
+                    processed_df = preprocess_input(raw_df.copy())
+                    predictions = model.predict(processed_df)
+                    results_df = raw_df.copy()
+                    results_df["Prediction"] = ["Diabetic" if x == 1 else "Not Diabetic" for x in predictions]
+                    
+                    st.dataframe(results_df)
+                    st.download_button(
+                        "📥 Download Predictions", 
+                        results_df.to_csv(index=False), 
+                        "predictions.csv", 
+                        "text/csv"
+                    )
+                except Exception as e:
+                    st.error(f"Error processing data: {str(e)}")
 
 # ---------------------- STUDY REPORT ----------------------
 if menu == "📊 Study Report":
