@@ -1,26 +1,9 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import seaborn as sns
 import joblib
 import matplotlib.pyplot as plt
-from IPython.display import display
-
-from sklearn.metrics import roc_auc_score, roc_curve, classification_report, confusion_matrix
-from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
-from sklearn.feature_selection import RFECV
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import PowerTransformer
-from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
-
-from diabetesprediction_utils import (
-    preprocess_pipeline,
-    all_numerical_columns  
-)
+import seaborn as sns
+from diabetesprediction_utils import preprocess_pipeline
 
 st.set_page_config(page_title="Diabetes Prediction", layout="wide", page_icon="🏥")
 
@@ -30,20 +13,6 @@ def load_model():
     return joblib.load("best_model.pkl")
 
 model = load_model()
-
-def preprocess_input(df):
-    """Apply all preprocessing steps using functions from pipeline file"""
-    # Handle PatientID if present
-    if 'PatientID' in df.columns:
-        df = remove_patient_id(df)
-    
-    # Apply processing pipeline
-    df = df.drop_duplicates()
-    df = winsorize_with_exception(df)
-    df = generate_features(df)
-    df = transform_data(df, all_numerical_columns)
-    
-    return df
 
 # Custom Theme
 custom_css = """
@@ -70,16 +39,19 @@ st.markdown(
     </style>
     """, unsafe_allow_html=True
 )
-st.sidebar.image("logo.jpg", width=120)  # Display Logo Properly
+st.sidebar.image("logo.jpg", width=120)
 st.sidebar.markdown("<h2 style='text-align: center;'>Diabetes Prediction</h2>", unsafe_allow_html=True)
 
 # Sidebar Menu selectbox
-menu = st.sidebar.selectbox("📌 Select a Page", ["🏥 Prediction", "📊 Study Report", "📈 Model Evaluation", "ℹ️ About"])
+menu = st.sidebar.selectbox("📌 Select a Page", 
+                          ["🏥 Prediction", "📊 Study Report", "📈 Model Evaluation", "ℹ️ About"])
 
 # ----------------------  PREDICTION ----------------------
 if menu == "🏥 Prediction":
     st.title("🩺 Diabetes Prediction")
-    prediction_type = st.radio("Choose Prediction Type:", ["Single Prediction", "Multiple Prediction"], horizontal=True)
+    prediction_type = st.radio("Choose Prediction Type:", 
+                             ["Single Prediction", "Multiple Prediction"], 
+                             horizontal=True)
 
     if prediction_type == "Single Prediction":
         st.subheader("📝 Enter Patient Details")
@@ -98,8 +70,9 @@ if menu == "🏥 Prediction":
             pedigree = st.number_input("🧬 Diabetes Pedigree", 0.0, 2.5, 0.5)
             age = st.number_input("🎂 Age", 18, 90, 30)
 
+        # Normal prediction button
         if st.button("🚀 Predict"):
-            # Create DataFrame directly
+            # Create DataFrame
             input_df = pd.DataFrame([{
                 'Pregnancies': pregnancies,
                 'PlasmaGlucose': glucose,
@@ -111,40 +84,69 @@ if menu == "🏥 Prediction":
                 'Age': age
             }])
             
-            # Process and predict
-            processed_data = preprocess_input(input_df)
-            prediction = model.predict(processed_data)[0]
+            # Process data
+            processed_data = preprocess_pipeline(input_df)
             
-            # Display results
+            # ===== DEBUG SECTION =====
+            st.subheader("🔍 Debug Information")
+            
+            # Show processed data stats
+            st.write("#### Processed Data Preview")
+            st.dataframe(processed_data)
+            
+            # Display raw probabilities
+            proba = model.predict_proba(processed_data)[0]
+            st.write(f"#### Raw Probabilities")
+            st.write(f"- Non-Diabetic: {proba[0]:.2%}")
+            st.write(f"- Diabetic: {proba[1]:.2%}")
+            # ===== END DEBUG =====
+            
+            # Final prediction
+            prediction = model.predict(processed_data)[0]
             if prediction == 1:
                 st.error("🔴 Prediction: Diabetic")
+                st.warning("High diabetes risk detected. Please consult a specialist.")
             else:
                 st.success("🟢 Prediction: Not Diabetic")
+                st.info("No significant diabetes risk detected.")
 
     elif prediction_type == "Multiple Prediction":
         st.subheader("📂 Upload CSV File")
-        uploaded_file = st.file_uploader("📤 Upload CSV", type=["csv"])
+        uploaded_file = st.file_uploader("📤 Upload patient data (CSV format)", 
+                                       type=["csv"],
+                                       help="File should contain the same columns as single prediction inputs")
         
         if uploaded_file:
-            raw_df = pd.read_csv(uploaded_file)
-            st.dataframe(raw_df)
-            
-            if st.button("🔍 Predict for Uploaded Data"):
-                try:
-                    processed_df = preprocess_input(raw_df.copy())
-                    predictions = model.predict(processed_df)
-                    results_df = raw_df.copy()
-                    results_df["Prediction"] = ["Diabetic" if x == 1 else "Not Diabetic" for x in predictions]
-                    
-                    st.dataframe(results_df)
-                    st.download_button(
-                        "📥 Download Predictions", 
-                        results_df.to_csv(index=False), 
-                        "predictions.csv", 
-                        "text/csv"
-                    )
-                except Exception as e:
-                    st.error(f"Error processing data: {str(e)}")
+            try:
+                raw_df = pd.read_csv(uploaded_file)
+                st.write("### Raw Patient Data Preview")
+                st.dataframe(raw_df.head(3))
+                
+                if st.button("🔍 Predict for All Patients"):
+                    with st.spinner("Processing data and making predictions..."):
+                        # Process entire dataset
+                        processed_df = preprocess_pipeline(raw_df.copy())
+                        
+                        # Get predictions
+                        predictions = model.predict(processed_df)
+                        results_df = processed_df.copy()
+                        results_df["Prediction"] = ["Diabetic" if x == 1 else "Not Diabetic" for x in predictions]
+                        results_df["Confidence"] = model.predict_proba(processed_df)[:, 1].round(2)
+                        
+                        st.write("### Prediction Results")
+                        st.dataframe(results_df)
+                        
+                        # Download button
+                        csv = results_df.to_csv(index=False)
+                        st.download_button(
+                            label="📥 Download Full Results",
+                            data=csv,
+                            file_name='diabetes_predictions.csv',
+                            mime='text/csv'
+                        )
+            except Exception as e:
+                st.error(f"❌ Processing error: {str(e)}")
+                st.info("Please ensure your file matches the expected format with all required columns.")
 
 # ---------------------- STUDY REPORT ----------------------
 if menu == "📊 Study Report":
@@ -192,7 +194,7 @@ if menu == "📊 Study Report":
         "🛠 **Missing Values Handling:** No major missing data",
         "📊 **Feature Importance:** PlasmaGlucose and BMI are key indicators",
         "⚖️ **Diabetes Distribution:** 33.3% of the dataset individuals have diabetes",
-        "🧩 **Correlation Matrix:** High correlation between Pregnancies, AAge, BMI and diabetes"
+        "🧩 **Correlation Matrix:** High correlation between Pregnancies, Age, BMI and diabetes"
     ]
     
     for slide in eda_slides:

@@ -1,9 +1,7 @@
 # diabetesprediction_utils.py
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import PowerTransformer
 
-# Liste des colonnes numériques (utilisée dans transform_data)
 all_numerical_columns = [
     "Pregnancies", "PlasmaGlucose", "DiastolicBloodPressure",
     "TricepsThickness", "SerumInsulin", "BMI", "DiabetesPedigree", "Age",
@@ -11,31 +9,10 @@ all_numerical_columns = [
 ]
 
 def remove_patient_id(dataframe):
-    """Remove PatientID column from DataFrame."""
-    return dataframe.drop(columns=['PatientID'])
-
-def winsorize_with_exception(df, lower_percentile=0.05, upper_percentile=0.95):
-    """
-    Winsorize specified columns by replacing extreme values.
-    Handles different thresholds for each column based on medical constraints.
-    """
-    outlier_columns = {
-        'PlasmaGlucose': {'lower': True, 'upper': False},
-        'DiastolicBloodPressure': {'lower': True, 'upper': False},
-        'TricepsThickness': {'lower': False, 'upper': True},
-        'SerumInsulin': {'lower': True, 'upper': True},
-        'BMI': {'lower': False, 'upper': True}
-    }
-
-    for col, thresholds in outlier_columns.items():
-        if thresholds['lower']:
-            lower = df[col].quantile(lower_percentile)
-            df[col] = df[col].clip(lower=lower)
-        if thresholds['upper']:
-            upper = df[col].quantile(upper_percentile)
-            df[col] = df[col].clip(upper=upper)
-    
-    return df
+    """Remove PatientID column if it exists"""
+    if 'PatientID' in dataframe.columns:
+        return dataframe.drop(columns=['PatientID'])
+    return dataframe
 
 def generate_features(df):
     """
@@ -62,28 +39,12 @@ def generate_features(df):
     
     return df
 
-def transform_data(df, columns=all_numerical_columns):
-    """
-    Apply Yeo-Johnson transformation and standardization to numerical columns.
-    """
-    pt = PowerTransformer(method='yeo-johnson', standardize=True)
-    df[columns] = pt.fit_transform(df[columns])
-    return df
-
 def preprocess_pipeline(df):
     """
-    Complete preprocessing pipeline combining all steps:
-    1. Remove PatientID
-    2. Handle duplicates
-    3. Winsorize outliers
-    4. Generate features
-    5. Apply transformations
+    Complete preprocessing pipeline combining all steps
     """
     df = remove_patient_id(df)
-    df = df.drop_duplicates()
-    df = winsorize_with_exception(df)
     df = generate_features(df)
-    df = transform_data(df)
     
     # Remove low-importance features (from original feature selection)
     features_to_remove = [
@@ -99,3 +60,27 @@ def preprocess_pipeline(df):
     # Only remove columns that exist
     features_to_remove = [col for col in features_to_remove if col in df.columns]
     return df.drop(columns=features_to_remove)
+
+"""test_data = pd.DataFrame({
+    "Pregnancies": [2, 4],
+    "PlasmaGlucose": [120, 140],
+    "DiastolicBloodPressure": [80, 90],
+    "TricepsThickness": [25, 32],
+    "SerumInsulin": [85, 130],
+    "BMI": [24.5, 29.1],
+    "DiabetesPedigree": [0.5, 1.2],
+    "Age": [45, 60]
+})
+
+print("Dataset before preprocessing:")
+print(test_data)
+
+processed_data = preprocess_pipeline(test_data)
+
+print("\nDataset after preprocessing:")
+print(processed_data)
+
+new_columns = [col for col in processed_data.columns if col not in test_data.columns]
+
+print("\nList of columns in the processed dataset:")
+print(processed_data.columns.tolist())"""
