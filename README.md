@@ -9,7 +9,7 @@
   
 <!-- Badges -->
 <p>
-  <a href="https://a24-diabetes-prediction.streamlit.app/">
+  <a href="https://ml-project-diabetes-prediction-au8e37mgywogwtu4bqgymv.streamlit.app/">
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Open in Streamlit" />
   </a>
   <a href="https://colab.research.google.com/github/NathanBrunet/ML-Project-Diabetes-Prediction/blob/main/DiabetesPrediction.ipynb">
