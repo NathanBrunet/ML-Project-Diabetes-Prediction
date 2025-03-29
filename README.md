@@ -70,6 +70,27 @@ For the modeling, training and testing phase:
 
 ### 💻 Streamlit Application
 
+The Diabetes Prediction app proposes 4 pages to explore : 
+- Prediction
+- Study Report
+- Model Evaluation
+- About
+
+#### Prediction
+
+Allows the user to conduct a diabetes diagnosis prediction based on its inputs for the different concerned features (Age, BMI, etc.), for a single (Single Prediction button) or multiple (Multiple Prediction) individuals (by charging a CSV file), and debuging insights.
+
+#### Prediction
+
+Provides several key visual insights about the dataset used and its features (features histograms, class repartition - Diabetic VS Non-Diabetic, correlation matrix between features and target variable).
+
+#### Model Evaluation
+
+Provides statistics from the classification report of the selected model (XGBoost) used for prediction (Accuracy, Precision, Recall, F1-Score, features importances for this model, both basic and crafted during features engineering step before the model training
+
+#### About
+
+Provides general informations about diabetes, recap info concerning the dataset, and contributors info.
 
 <!-- Getting Started -->
 ## 	:toolbox: Getting Started
@@ -108,6 +129,10 @@ Run the Streamlit app which automatically retrieves the saved ML model to make d
   streamlit run st_app2.py
 ```
 
+A small script is finally furnished to gather insights about the model used in the application. Run this command to obtain them
+```bash
+  python model_inspection.py
+```
 
 <!-- Contributing -->
 ## :wave: Contributing
