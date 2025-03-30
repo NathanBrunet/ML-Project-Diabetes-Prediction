@@ -126,7 +126,7 @@ jupyter notebook notebook.ipynb
 
 Run the Streamlit app which automatically retrieves the saved ML model to make diagnosis predictions locally and benefit from dataset insights and information
 ```bash
-  streamlit run st_app2.py
+  streamlit run st_app.py
 ```
 
 A small script is finally furnished to gather insights about the model used in the application. Run this command to obtain them
